@@ -77,6 +77,12 @@ public class Deck {
         return count;
     }
 
+    public boolean hasBook(){
+        boolean hasBook = false;
+        //todo: 
+        return hasBook;
+    }
+
     public void displayDeck(){
         Stack temp = new Stack(deck.size());
         int cardPop;
@@ -85,7 +91,7 @@ public class Deck {
             System.out.print(cardPop+" ");
             temp.push(cardPop);
         }
-        System.out.println();
+        
         while (!temp.isEmpty()) {
             deck.push(temp.pop());
         }
