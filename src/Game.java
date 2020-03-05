@@ -18,7 +18,7 @@ public class Game {
         dealCards();
     }
 
-    public void dealCards() {
+    void dealCards() {
         mainCards = new Deck(totalDeckSize);
         Stack playerStack = new Stack(playerDeckSize);
         Stack computerStack = new Stack(playerDeckSize);
@@ -48,7 +48,7 @@ public class Game {
         table = new Deck(tableStack);
     }
 
-    public void transferCards(Deck from, Deck to, int targetCard) {
+    void transferCards(Deck from, Deck to, int targetCard) {
         Stack temp = new Stack(from.getDeck().size());
         int cardPop;
         while (!from.getDeck().isEmpty()) {
@@ -65,64 +65,120 @@ public class Game {
         }
     }
 
-    public int takeChoice() {
+    boolean tryParseInt(String value) {  
+        try {  
+            Integer.parseInt(value);  
+            return true;  
+         } catch (NumberFormatException e) {  
+            return false;  
+         }  
+    }
+
+    void displayTurn(){
+        System.out.println("Turn: " + turnCount);
+        table.displayName();
+        System.out.print("= ");
+        table.displayDeck();
+        System.out.println();
+        player.displayName();
+        System.out.print("= ");
+        player.displayDeck();
+        System.out.print("Book: ");
+        System.out.print(player.getBook() + "  ");
+        System.out.println();
+        computer.displayName();
+        System.out.print("= ");
+        computer.displayDeck();
+        System.out.print("Book: ");
+        System.out.println(computer.getBook());
+        System.out.println();
+    }    
+
+    int takeChoice() {
         boolean isRightAnswer;
         int choice = 0;
+        String control;
         isRightAnswer = false;
         while (!isRightAnswer) {
             player.displayName();
-            System.out.print(" ask: ");
-            choice = sc.nextInt();
-            if (choice > 0 && choice < 7 && player.hasCard(choice)) {
+            System.out.print("ask: ");
+            control = sc.nextLine();
+            if(tryParseInt(control)){
+                choice = Integer.parseInt(control);
+            }
+            if (choice > 0 && choice < 7 && player.hasCard(player.getDeck(), choice)) {
                 isRightAnswer = true;
             }
         }
         return choice;
     }
 
-    public void play() {
+    void play() {
         boolean isFinished = false;
         boolean turn = true; // True for player False for computer
         int choice;
         while (!isFinished) {
-            System.out.println("Turn: " + turnCount + "              Table");
-            player.displayName();
-            player.displayDeck();
-            System.out.print("Book: ");
-            player.getBook();
-            table.displayDeck();
-            System.out.println();
-            computer.displayName();
-            computer.displayDeck();
-            System.out.print("Book: ");
-            computer.getBook();
-            System.out.println();
-            System.out.println();
+            displayTurn();
             if (turn) {
                 choice = takeChoice();
-                if (computer.hasCard(choice)) {
+                if (computer.hasCard(computer.getDeck(), choice)) {
                     transferCards(computer, player, choice);
-                    if(player.hasBook()){//COMPLETE HASBOOK
+                    if (player.hasBook()) {
                         player.incrementBookCount();
-                        //CLEAN THE CARDS WHEN BOOKED
+                        player.cleanBookedCards();
                     }
                 } else {
                     computer.displayName();
                     System.out.println("says \"Go Fish\"");
                     player.getDeck().push(table.getDeck().pop());
-                    if(player.hasBook()){//COMPLETE HASBOOK
+                    if (player.hasBook()) {
                         player.incrementBookCount();
-                        //CLEAN THE CARDS WHEN BOOKED
+                        player.cleanBookedCards();
                     }
                     turn = false;
                 }
             } else {
-
+                choice = computer.pickRandomCard();
+                computer.displayName();
+                System.out.println(" asks: " + choice);
+                if (player.hasCard(player.getDeck(), choice)) {
+                    transferCards(player, computer, choice);
+                    if (computer.hasBook()) {
+                        computer.incrementBookCount();
+                        computer.cleanBookedCards();
+                    }
+                } else {
+                    player.displayName();
+                    System.out.println("say \"Go Fish\"");
+                    computer.getDeck().push(table.getDeck().pop());
+                    if (computer.hasBook()) {
+                        computer.incrementBookCount();
+                        computer.cleanBookedCards();
+                    }
+                    turn = true;
+                }
             }
+            System.out.println();
             if (player.getDeck().size() == 0 || computer.getDeck().size() == 0) {
                 isFinished = true;
             }
+            
             turnCount++;
+        }
+
+        //Display the final state of the game  
+        displayTurn();
+
+        if (player.getBook() > computer.getBook()) {
+            player.displayName();
+            System.out.println("win!");
+        }
+        else if (player.getBook() < computer.getBook()){
+            computer.displayName();
+            System.out.println("wins!");
+        }
+        else{
+            System.out.println("Tie!");
         }
     }
 }
