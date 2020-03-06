@@ -140,7 +140,7 @@ public class Game {
             } else {
                 choice = computer.pickRandomCard();
                 computer.displayName();
-                System.out.println(" asks: " + choice);
+                System.out.println("asks: " + choice);
                 if (player.hasCard(player.getDeck(), choice)) {
                     transferCards(player, computer, choice);
                     if (computer.hasBook()) {
