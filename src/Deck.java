@@ -72,19 +72,19 @@ public class Deck {
         return rndCard;
     }
 
-    public boolean hasCard(Stack deck, int targetCard) {
+    public boolean hasCard(Stack stack, int targetCard) {
         boolean hasCard = false;
-        Stack temp = new Stack(deck.size());
+        Stack temp = new Stack(stack.size());
         int cardPop;
-        while (!deck.isEmpty() && !hasCard) {
-            cardPop = (int) deck.pop();
+        while (!stack.isEmpty() && !hasCard) {
+            cardPop = (int) stack.pop();
             if (cardPop == targetCard) {
                 hasCard = true;
             }
             temp.push(cardPop);
         }
         while (!temp.isEmpty()) {
-            deck.push(temp.pop());
+            stack.push(temp.pop());
         }
         return hasCard;
     }
