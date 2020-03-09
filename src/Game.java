@@ -13,7 +13,7 @@ public class Game {
     private int turnCount = 1;
     private Random rnd = new Random();
     private Scanner sc = new Scanner(System.in);
-
+    
     public Game() {
         dealCards();
     }
@@ -117,6 +117,7 @@ public class Game {
         boolean isFinished = false;
         boolean turn = true; // True for player False for computer
         int choice;
+        int randomTableCard;
         while (!isFinished) {
             displayTurn();
             if (turn) {
@@ -130,7 +131,9 @@ public class Game {
                 } else {
                     computer.displayName();
                     System.out.println("says \"Go Fish\"");
-                    player.getDeck().push(table.getDeck().pop());
+                    randomTableCard = table.pickRandomCard();
+                    table.removeCard(randomTableCard);
+                    player.getDeck().push(randomTableCard);
                     if (player.hasBook()) {
                         player.incrementBookCount();
                         player.cleanBookedCards();
@@ -150,7 +153,10 @@ public class Game {
                 } else {
                     player.displayName();
                     System.out.println("say \"Go Fish\"");
-                    computer.getDeck().push(table.getDeck().pop());
+                    randomTableCard = table.pickRandomCard();
+                    table.removeCard(randomTableCard);
+                    computer.getDeck().push(randomTableCard);
+                
                     if (computer.hasBook()) {
                         computer.incrementBookCount();
                         computer.cleanBookedCards();
