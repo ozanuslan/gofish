@@ -106,36 +106,51 @@ public class Deck {
         return count;
     }
 
-    public boolean hasBook(){
-        boolean hasBook = false;
-        Stack temp1 = new Stack(deck.size());
-        Stack temp2 = new Stack(deck.size());
+    public void removeCard(int targetCard){
+        Stack temp = new Stack(deck.size());
         int cardPop;
         while(!deck.isEmpty()){
             cardPop = (int)deck.pop();
-            if(!hasCard(temp1, cardPop)){
-                temp1.push(cardPop);
+            if(cardPop == targetCard){
+                break;
             }
-            temp2.push(cardPop);
+            temp.push(cardPop);
         }
-        while(!temp2.isEmpty()){
-            deck.push(temp2.pop());
+        while(!temp.isEmpty()){
+            deck.push(temp.pop());
+        }
+    }
+
+    public boolean hasBook(){
+        boolean hasBook = false;
+        Stack uniqueCardStack = new Stack(deck.size());
+        Stack temp = new Stack(deck.size());
+        int cardPop;
+        while(!deck.isEmpty()){
+            cardPop = (int)deck.pop();
+            if(!hasCard(uniqueCardStack, cardPop)){
+                uniqueCardStack.push(cardPop);
+            }
+            temp.push(cardPop);
+        }
+        while(!temp.isEmpty()){
+            deck.push(temp.pop());
         }
 
         int count = 0;
         int uniqueCard;
-        while(!temp1.isEmpty() && count < 4){
+        while(!uniqueCardStack.isEmpty() && count < 4){
             count = 0;
-            uniqueCard = (int)temp1.pop();
+            uniqueCard = (int)uniqueCardStack.pop();
             while(!deck.isEmpty()){
                 cardPop = (int)deck.pop();
                 if(cardPop == uniqueCard){
                     count++;
                 }
-                temp2.push(cardPop);
+                temp.push(cardPop);
             }
-            while(!temp2.isEmpty()){
-                deck.push(temp2.pop());
+            while(!temp.isEmpty()){
+                deck.push(temp.pop());
             }
         }
         if(count == 4){
@@ -145,13 +160,13 @@ public class Deck {
     }
 
     public void cleanBookedCards(){
-        Stack temp1 = new Stack(deck.size());
+        Stack uniqueCardStack = new Stack(deck.size());
         Stack temp2 = new Stack(deck.size());
         int cardPop;
         while(!deck.isEmpty()){
             cardPop = (int)deck.pop();
-            if(!hasCard(temp1, cardPop)){
-                temp1.push(cardPop);
+            if(!hasCard(uniqueCardStack, cardPop)){
+                uniqueCardStack.push(cardPop);
             }
             temp2.push(cardPop);
         }
@@ -162,9 +177,9 @@ public class Deck {
         int count = 0;
         int uniqueCard;
         int cleaningCard = 0;
-        while(!temp1.isEmpty() && count < 4){
+        while(!uniqueCardStack.isEmpty() && count < 4){
             count = 0;
-            uniqueCard = (int)temp1.pop();
+            uniqueCard = (int)uniqueCardStack.pop();
             while(!deck.isEmpty()){
                 cardPop = (int)deck.pop();
                 if(cardPop == uniqueCard){
